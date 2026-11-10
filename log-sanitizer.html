@@ -323,7 +323,7 @@ const LS = (function () {
 
   const COOKIE_ATTRS = new Set(['path', 'domain', 'expires', 'max-age', 'samesite', 'secure', 'httponly', 'priority', 'partitioned']);
   const KV_SKIP = new Set(['null', 'true', 'false', 'none', 'undefined']);
-  const VERSION_CTX = /(?:version|ver|v|build|release|rev|версия|версии)[\s:=_.-]*$/i;
+  const VERSION_CTX = /(?:version|ver|v|build|release|rev)[\s:=_.-]*$/i;
   const USER_FALSE = new Set(['from', 'for']);
 
   // pri: lower number means higher priority
