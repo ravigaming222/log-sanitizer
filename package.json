@@ -1,7 +1,7 @@
 {
   "name": "log-sanitizer",
-  "version": "1.0.0",
-  "description": "Офлайновая утилита для удаления секретов и персональных данных из логов (один HTML-файл).",
+  "version": "1.0.1",
+  "description": "Offline single-file tool that removes secrets and personal data from logs.",
   "license": "MIT",
   "private": true,
   "scripts": {

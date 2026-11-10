@@ -1,5 +1,5 @@
 'use strict';
-// Тесты без зависимостей: достают блок логики из log-sanitizer.html и гоняют его в Node.
+// Dependency-free tests: extract the logic block from log-sanitizer.html and run it in Node.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -11,7 +11,7 @@ const END = '/* === LOGIC:END === */';
 const block = html.slice(html.indexOf(START) + START.length, html.indexOf(END));
 const LS = new Function(block + '\nreturn LS;')();
 
-// Фиктивные секреты собраны конкатенацией, чтобы сканеры секретов не принимали их за утечку.
+// Fake secrets are built by concatenation so secret scanners do not mistake them for leaks.
 const FAKE = {
   aws: 'AKIAIOSFODNN7EXAMPLE',
   ghp: 'gh' + 'p_' + '0123456789abcdefghijklmnopqrstuvwxyz',
@@ -33,7 +33,7 @@ test('e-mail', () => {
   assert.equal(out('no mail here @ all, x@y'), 'no mail here @ all, x@y');
 });
 
-test('IPv4: положительные и ложные срабатывания', () => {
+test('IPv4: positives and false positives', () => {
   assert.equal(out('from 203.0.113.42 port 22'), 'from [IPV4] port 22');
   assert.equal(out('ip=192.0.2.1.'), 'ip=[IPV4].');
   assert.equal(out('version 1.2.3.4 released'), 'version 1.2.3.4 released');
@@ -43,7 +43,7 @@ test('IPv4: положительные и ложные срабатывания'
   assert.equal(out('date 2024.01.15 and 3.14159'), 'date 2024.01.15 and 3.14159');
 });
 
-test('IPv4: опция приватных адресов', () => {
+test('IPv4: private address option', () => {
   const t = 'a 10.0.0.5 b 192.168.1.1 c 127.0.0.1 d 172.16.0.1 e 203.0.113.9 f 172.32.0.1';
   assert.equal(out(t, { skipPrivate: true }), 'a 10.0.0.5 b 192.168.1.1 c 127.0.0.1 d 172.16.0.1 e [IPV4] f [IPV4]');
   assert.equal(out('x 10.0.0.5'), 'x [IPV4]');
@@ -69,7 +69,7 @@ test('JWT', () => {
   assert.equal(out('eyJabc.def'), 'eyJabc.def');
 });
 
-test('ключи по префиксам', () => {
+test('prefixed keys', () => {
   for (const k of ['aws', 'ghp', 'slack', 'google', 'stripe', 'npm', 'gitlab']) {
     assert.equal(out('key ' + FAKE[k] + ' end'), 'key [KEY] end', k);
   }
@@ -77,7 +77,7 @@ test('ключи по префиксам', () => {
   assert.equal(out('AKIA123'), 'AKIA123');
 });
 
-test('заголовки авторизации и Cookie', () => {
+test('authorization headers and cookies', () => {
   assert.equal(out('Authorization: Bearer abc.def-123'), 'Authorization: Bearer [SECRET]');
   assert.equal(out('Authorization: Basic dXNlcjpwYXNz'), 'Authorization: Basic [SECRET]');
   assert.equal(out('X-Api-Key: zzz999'), 'X-Api-Key: [SECRET]');
@@ -85,7 +85,7 @@ test('заголовки авторизации и Cookie', () => {
   assert.equal(out('Set-Cookie: sid=abc; Path=/; HttpOnly; Secure'), 'Set-Cookie: sid=[SECRET]; Path=/; HttpOnly; Secure');
 });
 
-test('пары ключ=значение и JSON', () => {
+test('key=value pairs and JSON', () => {
   assert.equal(out('password=hunter2 next'), 'password=[SECRET] next');
   assert.equal(out('{"password": "hunter2", "name": "x"}'), '{"password": "[SECRET]", "name": "x"}');
   assert.equal(out("db_passwd: 'p@ss'"), "db_passwd: '[SECRET]'");
@@ -96,29 +96,29 @@ test('пары ключ=значение и JSON', () => {
   assert.equal(out('password:\nnext'), 'password:\nnext');
 });
 
-test('учётные данные в URL: маскируются user и pass', () => {
+test('URL credentials: user and pass are masked', () => {
   assert.equal(out('https://bob:s3cret@host.example.com/p'), 'https://[USER]:[SECRET]@host.example.com/p');
   assert.equal(out('https://example.com/a@b'), 'https://example.com/a@b');
 });
 
-test('приоритет: пароль внутри URL и токен внутри JSON-поля', () => {
+test('priority: password inside URL and token inside JSON field', () => {
   const r = run('url=postgres://u:pw123@db.example.com password=pw123');
   assert.equal(r.text, 'url=postgres://[USER]:[SECRET]@db.example.com password=[SECRET]');
   assert.equal(out('{"token": "' + FAKE.jwt + '"}'), '{"token": "[JWT]"}');
   assert.equal(out('token=' + FAKE.ghp), 'token=[KEY]');
   assert.equal(out('Authorization: Bearer ' + FAKE.jwt), 'Authorization: Bearer [JWT]');
-  // e-mail внутри URL-учётки не должен разрываться
+  // an e-mail-like part of URL credentials must not be split
   assert.equal(out('ftp://me:x@example.com/'), 'ftp://[USER]:[SECRET]@example.com/');
 });
 
-test('приватный ключ с переносами строк', () => {
+test('private key block with line breaks', () => {
   const t = 'before\n' + FAKE.pem + '\nafter';
   assert.equal(out(t), 'before\n[PRIVATE_KEY]\nafter');
   const t2 = '{"private_key": "' + FAKE.pem.replace(/\n/g, '\\n') + '"}';
   assert.ok(!out(t2).includes('MIIFAKE'));
 });
 
-test('проверка Луна и карты', () => {
+test('Luhn check and cards', () => {
   assert.ok(LS.luhnOk('4111111111111111'));
   assert.ok(!LS.luhnOk('4111111111111112'));
   assert.equal(out('card 4111 1111 1111 1111 ok'), 'card [CARD] ok');
@@ -127,7 +127,7 @@ test('проверка Луна и карты', () => {
   assert.equal(out('ts 1699999999999 id 1234567890123456'), 'ts 1699999999999 id 1234567890123456');
 });
 
-test('проверка IBAN mod 97', () => {
+test('IBAN mod 97 check', () => {
   assert.ok(LS.ibanOk('GB82WEST12345698765432'));
   assert.ok(!LS.ibanOk('GB82WEST12345698765433'));
   assert.equal(out('iban GB82 WEST 1234 5698 7654 32 end'), 'iban [IBAN] end');
@@ -136,21 +136,21 @@ test('проверка IBAN mod 97', () => {
   assert.equal(out('iban GB82 WEST 1234 5698 7654 33'), 'iban GB82 WEST 1234 5698 7654 33');
 });
 
-test('телефоны', () => {
+test('phones', () => {
   assert.equal(out('call +1 (202) 555-0143 now'), 'call [PHONE] now');
   assert.equal(out('call +49 30 123456 now'), 'call [PHONE] now');
   assert.equal(out('1234567890 and 202-555-0143 and +123'), '1234567890 and 202-555-0143 and +123');
   assert.equal(out('2024-01-15T10:00:00+0100 +2024-01-15'), '2024-01-15T10:00:00+0100 +2024-01-15');
 });
 
-test('опциональные детекторы выключены по умолчанию', () => {
+test('optional detectors are off by default', () => {
   const t = 'host app01.corp.example.com id 3f2504e0-4f89-11d3-9a0c-0305e82c3301 user=alice';
   assert.ok(out(t).includes('app01.corp.example.com'));
   assert.ok(out(t).includes('3f2504e0'));
   assert.equal(out('user=alice').includes('alice'), true);
 });
 
-test('хосты, UUID, имена пользователей', () => {
+test('hosts, UUID, usernames', () => {
   const on = { types: { hosts: true, uuid: true, usernames: true } };
   assert.equal(out('see app01.corp.internal ok', on), 'see [HOST] ok');
   assert.equal(out('id 3f2504e0-4f89-11d3-9a0c-0305e82c3301', on), 'id [UUID]');
@@ -160,22 +160,22 @@ test('хосты, UUID, имена пользователей', () => {
   assert.equal(out('app.log config.json', on), 'app.log config.json');
 });
 
-test('пользовательские слова и регулярки', () => {
+test('custom words and regexes', () => {
   const o = { types: { custom: true }, custom: ['ProjectX', 're:ORD-\\d{4}', 're:(', ''] };
   assert.equal(out('ProjectX order ORD-1234 done', o), '[CUSTOM] order [CUSTOM] done');
   assert.equal(LS.buildCustom(o.custom).errors.length, 1);
-  assert.equal(out('ProjectX', { custom: ['ProjectX'] }), 'ProjectX'); // чекбокс выключен
+  assert.equal(out('ProjectX', { custom: ['ProjectX'] }), 'ProjectX'); // checkbox is off
 });
 
-test('белый список', () => {
+test('whitelist', () => {
   const o = { whitelist: ['support@example.com', '203.0.113.1'] };
   assert.equal(out('a support@example.com b other@example.com c 203.0.113.1 d 203.0.113.2', o),
     'a support@example.com b [EMAIL] c 203.0.113.1 d [IPV4]');
-  // значение из белого списка не позволяет вложенным детекторам сработать
+  // a whitelisted value must not let nested detectors fire
   assert.equal(out('x support@example.com', { whitelist: ['support@example.com'], types: { hosts: true } }), 'x support@example.com');
 });
 
-test('режимы замены', () => {
+test('replacement modes', () => {
   const t = 'a@example.com 4111 1111 1111 1111 ' + FAKE.aws;
   assert.equal(out(t, { mode: 'type' }), '[EMAIL] [CARD] [KEY]');
   assert.equal(out(t, { mode: 'remove' }), '[REDACTED] [REDACTED] [REDACTED]');
@@ -184,7 +184,7 @@ test('режимы замены', () => {
   assert.equal(out('password=abcd', { mode: 'partial' }), 'password=****');
 });
 
-test('стабильность псевдонимов', () => {
+test('alias stability', () => {
   const s = LS.createSession();
   const a = LS.sanitize('a@example.com b@example.com a@example.com 203.0.113.1 203.0.113.2', { mode: 'pseudonyms' }, s).text;
   assert.equal(a, 'EMAIL_1 EMAIL_2 EMAIL_1 IPV4_1 IPV4_2');
@@ -192,7 +192,7 @@ test('стабильность псевдонимов', () => {
   assert.equal(b, 'later EMAIL_2 and EMAIL_3 and IPV4_2');
 });
 
-test('обратимость: restore(sanitize(x)) === x', () => {
+test('reversibility: restore(sanitize(x)) === x', () => {
   const ips = Array.from({ length: 12 }, (_, i) => '203.0.113.' + (i + 1)).join(' ');
   const x = [
     'mail a@example.com ' + ips, 'Authorization: Bearer abc123token', 'password=hunter2',
@@ -207,14 +207,14 @@ test('обратимость: restore(sanitize(x)) === x', () => {
   assert.equal(LS.restore(r.text, JSON.stringify(LS.exportMap(s))), x);
 });
 
-test('восстановление: длинные псевдонимы не ломаются короткими', () => {
+test('restore: long aliases are not broken by short ones', () => {
   const map = { entries: [{ alias: 'IPV4_1', original: 'A' }, { alias: 'IPV4_10', original: 'B' }] };
   assert.equal(LS.restore('IPV4_10 IPV4_1 IPV4_10', map), 'B A B');
   assert.throws(() => LS.restore('x', '{not json'));
   assert.throws(() => LS.restore('x', {}));
 });
 
-test('псевдонимы не конфликтуют с уже имеющимися в тексте метками', () => {
+test('aliases do not clash with labels already in the text', () => {
   const x = 'EMAIL_1 is a word, mail a@example.com';
   const s = LS.createSession();
   const r = LS.sanitize(x, { mode: 'pseudonyms' }, s);
@@ -222,7 +222,7 @@ test('псевдонимы не конфликтуют с уже имеющим�
   assert.equal(LS.restore(r.text, LS.exportMap(s)), x);
 });
 
-test('идемпотентность во всех режимах', () => {
+test('idempotency in all modes', () => {
   const x = [
     'a@example.com 203.0.113.1 2001:db8::1 00:1B:44:11:3A:B7', 'password=hunter2 token: "abc"',
     'https://bob:pw@h.example.com/', 'Authorization: Bearer abc.def', 'Cookie: sid=abc',
@@ -238,18 +238,18 @@ test('идемпотентность во всех режимах', () => {
   }
 });
 
-test('счётчики по типам', () => {
+test('per-type counters', () => {
   const r = run('a@example.com b@example.com 203.0.113.1 password=x');
   assert.deepEqual({ ...r.counts }, { EMAIL: 2, IPV4: 1, SECRET: 1 });
   assert.equal(r.total, 4);
   assert.equal(r.segments.length, 4);
 });
 
-test('выключенные типы не срабатывают', () => {
+test('disabled types do not fire', () => {
   assert.equal(out('a@example.com', { types: { email: false } }), 'a@example.com');
 });
 
-test('производительность: 5 МБ быстрее 3 секунд', () => {
+test('performance: 5 MB in under 3 seconds', () => {
   const line = '2025-03-14 10:21:08 INFO user=alice mail a@example.com from 203.0.113.42 token=abc123 card 4111 1111 1111 1111 pid=12345 ok\n';
   const filler = 'GET /index.html 200 1532 "Mozilla/5.0" took 12ms version 1.2.3.4 trace 0123456789abcdef\n';
   let text = '';
@@ -258,5 +258,5 @@ test('производительность: 5 МБ быстрее 3 секунд
   const r = LS.sanitize(text, { mode: 'pseudonyms', types: { hosts: true, uuid: true, usernames: true } });
   const ms = Number(process.hrtime.bigint() - t0) / 1e6;
   assert.ok(r.total > 1000);
-  assert.ok(ms < 3000, 'слишком медленно: ' + Math.round(ms) + ' мс');
+  assert.ok(ms < 3000, 'too slow: ' + Math.round(ms) + ' ms');
 });

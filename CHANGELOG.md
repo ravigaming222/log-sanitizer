@@ -1,14 +1,19 @@
 # Changelog
 
-Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), версии следуют [SemVer](https://semver.org/lang/ru/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [SemVer](https://semver.org/).
+
+## [1.0.1] - 2026-11-10
+
+### Changed
+- The UI, README, SECURITY, CHANGELOG, tests and code comments are now in English.
 
 ## [1.0.0] - 2026-11-10
 
 ### Added
-- Единый самодостаточный файл `log-sanitizer.html` без сборки, зависимостей и сетевых запросов (CSP запрещает сеть).
-- Детекторы: e-mail, IPv4, IPv6, MAC, JWT, ключи по префиксам (AWS, GitHub, Slack, Google, Stripe, npm, GitLab), заголовки авторизации и Cookie, пары ключ=значение и JSON-поля, учётные данные в URL, блоки приватных ключей, карты (Луна), IBAN (mod 97), телефоны.
-- Опциональные детекторы: внутренние хосты и FQDN, UUID, имена пользователей, свои слова и регулярки; белый список.
-- Режимы замены: тип, стабильные псевдонимы, частичная маска, полное удаление.
-- Карта соответствий (JSON) и вкладка «Восстановить».
-- Одноходовая замена с разрешением пересечений по приоритету.
-- Тесты на Node (`npm test`), CI и автоматический релиз по тегу `v*`.
+- A single self-contained `log-sanitizer.html` with no build, dependencies or network requests (the CSP forbids the network).
+- Detectors: e-mail, IPv4, IPv6, MAC, JWT, prefixed keys (AWS, GitHub, Slack, Google, Stripe, npm, GitLab), authorization headers and cookies, key=value pairs and JSON fields, URL credentials, private key blocks, cards (Luhn), IBAN (mod 97), phones.
+- Optional detectors: internal hosts and FQDNs, UUID, usernames, custom words and regexes; a whitelist.
+- Replacement modes: type, stable pseudonyms, partial mask, full removal.
+- Mapping file (JSON) and the "Restore" tab.
+- Single-pass replacement with priority-based overlap resolution.
+- Node tests (`npm test`), CI and an automatic release on `v*` tags.

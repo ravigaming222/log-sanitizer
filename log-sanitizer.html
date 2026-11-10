@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -103,54 +103,54 @@ footer { border-top: 1px solid var(--border); margin-top: 32px; padding: 16px 0 
 </style>
 </head>
 <body>
-<div class="topbar"><div class="wrap"><a id="link-home" href="#">← Назад в портфолио</a></div></div>
+<div class="topbar"><div class="wrap"><a id="link-home" href="#">← Back to portfolio</a></div></div>
 <main class="wrap">
-  <div class="banner" role="note">Ничего не отправляется в сеть. Можешь отключить интернет и убедиться.</div>
+  <div class="banner" role="note">Nothing is sent over the network. You can turn off your internet and see for yourself.</div>
   <h1>Log Sanitizer</h1>
-  <p class="sub">Убирает чувствительные данные из логов, тикетов и конфигов перед тем, как ими поделиться.</p>
+  <p class="sub">Removes sensitive data from logs, tickets and configs before you share them.</p>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-clean" aria-selected="true" aria-controls="view-clean">Очистка</button>
-    <button class="tab" role="tab" id="tab-restore" aria-selected="false" aria-controls="view-restore">Восстановить</button>
+    <button class="tab" role="tab" id="tab-clean" aria-selected="true" aria-controls="view-clean">Sanitize</button>
+    <button class="tab" role="tab" id="tab-restore" aria-selected="false" aria-controls="view-restore">Restore</button>
   </div>
 
   <section id="view-clean" role="tabpanel" aria-labelledby="tab-clean">
     <details class="settings" open>
-      <summary>Настройки</summary>
-      <div class="group-title">Что маскировать</div>
+      <summary>Settings</summary>
+      <div class="group-title">What to mask</div>
       <div class="settings-grid" id="type-boxes"></div>
       <div class="row">
-        <label><input type="checkbox" id="opt-skip-private"> Не трогать приватные и loopback адреса</label>
+        <label><input type="checkbox" id="opt-skip-private"> Skip private and loopback addresses</label>
       </div>
-      <div class="group-title">Режим замены</div>
+      <div class="group-title">Replacement mode</div>
       <div class="row" id="mode-radios"></div>
-      <div class="group-title">Поведение</div>
+      <div class="group-title">Behavior</div>
       <div class="row">
-        <label><input type="checkbox" id="opt-autopaste"> Обрабатывать сразу при вставке</label>
-        <label><input type="checkbox" id="opt-highlight"> Подсвечивать замены в результате</label>
+        <label><input type="checkbox" id="opt-autopaste"> Process automatically on paste/input</label>
+        <label><input type="checkbox" id="opt-highlight"> Highlight replacements in the result</label>
       </div>
       <div class="two">
         <div>
-          <div class="group-title">Белый список (по одному значению на строку)</div>
-          <textarea id="whitelist" spellcheck="false" aria-label="Белый список"></textarea>
+          <div class="group-title">Whitelist (one value per line)</div>
+          <textarea id="whitelist" spellcheck="false" aria-label="Whitelist"></textarea>
         </div>
         <div>
-          <div class="group-title">Свои слова или регулярки (по одному на строку, <code>re:</code> для регулярки)</div>
-          <textarea id="custom" spellcheck="false" aria-label="Свои слова"></textarea>
+          <div class="group-title">Custom words or regexes (one per line, <code>re:</code> prefix for a regex)</div>
+          <textarea id="custom" spellcheck="false" aria-label="Custom words"></textarea>
           <div class="error" id="custom-error" hidden></div>
         </div>
       </div>
-      <p class="note">Белый список и свои слова нигде не сохраняются, как и текст. В localStorage попадают только чекбоксы и режим.</p>
+      <p class="note">The whitelist and custom words are never saved, just like the text. Only checkboxes and the mode go to localStorage.</p>
     </details>
 
     <div class="panes">
       <div class="pane">
-        <h2>Исходный текст</h2>
-        <textarea id="input" spellcheck="false" placeholder="Вставь сюда лог, конфиг или тикет..." aria-label="Исходный текст"></textarea>
+        <h2>Source text</h2>
+        <textarea id="input" spellcheck="false" placeholder="Paste a log, config or ticket here..." aria-label="Source text"></textarea>
       </div>
       <div class="pane">
-        <h2>Результат</h2>
-        <textarea id="output" spellcheck="false" readonly aria-label="Результат"></textarea>
+        <h2>Result</h2>
+        <textarea id="output" spellcheck="false" readonly aria-label="Result"></textarea>
         <pre id="output-view" class="view" hidden></pre>
         <div class="stats" id="stats" aria-live="polite"></div>
         <div class="note" id="highlight-note" hidden></div>
@@ -158,55 +158,55 @@ footer { border-top: 1px solid var(--border); margin-top: 32px; padding: 16px 0 
     </div>
 
     <div class="buttons">
-      <button class="btn primary" id="btn-run">Обработать</button>
-      <button class="btn" id="btn-copy">Копировать результат</button>
-      <button class="btn" id="btn-txt">Скачать как .txt</button>
-      <button class="btn" id="btn-sample">Пример</button>
-      <button class="btn" id="btn-clear">Очистить текст</button>
-      <button class="btn" id="btn-reset">Сбросить настройки</button>
+      <button class="btn primary" id="btn-run">Process</button>
+      <button class="btn" id="btn-copy">Copy result</button>
+      <button class="btn" id="btn-txt">Download as .txt</button>
+      <button class="btn" id="btn-sample">Example</button>
+      <button class="btn" id="btn-clear">Clear text</button>
+      <button class="btn" id="btn-reset">Reset settings</button>
       <span class="status" id="status"></span>
     </div>
 
     <div class="warn" id="map-warn" role="alert">
-      Файл карты соответствий содержит ОРИГИНАЛЬНЫЕ секреты. Не передавай его дальше, не прикладывай к тикетам и не отправляй ИИ-ассистенту.
+      The mapping file contains the ORIGINAL secrets. Do not pass it on, attach it to tickets or send it to an AI assistant.
     </div>
     <div class="buttons">
-      <button class="btn" id="btn-map">Скачать карту соответствий (JSON)</button>
-      <span class="note" id="map-info">Карта хранится только в памяти страницы, пока выбран режим «Псевдонимы».</span>
+      <button class="btn" id="btn-map">Download mapping (JSON)</button>
+      <span class="note" id="map-info">The mapping lives only in page memory and is filled in "Pseudonyms" mode.</span>
     </div>
   </section>
 
   <section id="view-restore" role="tabpanel" aria-labelledby="tab-restore" hidden>
-    <p class="sub">Вставь текст с псевдонимами (например, ответ ИИ-ассистента) и карту соответствий, получишь текст с исходными значениями.</p>
+    <p class="sub">Paste text with pseudonyms (for example, an AI assistant reply) and the mapping to get the original values back.</p>
     <div class="panes">
       <div class="pane">
-        <h2>Текст с псевдонимами</h2>
-        <textarea id="r-input" spellcheck="false" aria-label="Текст с псевдонимами"></textarea>
+        <h2>Text with pseudonyms</h2>
+        <textarea id="r-input" spellcheck="false" aria-label="Text with pseudonyms"></textarea>
       </div>
       <div class="pane">
-        <h2>Карта соответствий (JSON)</h2>
-        <textarea id="r-map" spellcheck="false" aria-label="Карта соответствий" placeholder="Вставь JSON карты или загрузи файл. Если оставить пустым, будет использована карта текущей сессии."></textarea>
+        <h2>Mapping (JSON)</h2>
+        <textarea id="r-map" spellcheck="false" aria-label="Mapping" placeholder="Paste the mapping JSON or load a file. If left empty, the current session mapping is used."></textarea>
         <div class="buttons" style="margin-bottom:0">
-          <label class="btn" style="cursor:pointer">Загрузить файл карты<input type="file" id="r-file" accept=".json,application/json" hidden></label>
+          <label class="btn" style="cursor:pointer">Load mapping file<input type="file" id="r-file" accept=".json,application/json" hidden></label>
         </div>
       </div>
     </div>
     <div class="buttons">
-      <button class="btn primary" id="r-run">Восстановить</button>
-      <button class="btn" id="r-copy">Копировать результат</button>
+      <button class="btn primary" id="r-run">Restore</button>
+      <button class="btn" id="r-copy">Copy result</button>
       <span class="status" id="r-status"></span>
     </div>
     <div class="pane">
-      <h2>Восстановленный текст</h2>
-      <textarea id="r-output" spellcheck="false" readonly aria-label="Восстановленный текст"></textarea>
+      <h2>Restored text</h2>
+      <textarea id="r-output" spellcheck="false" readonly aria-label="Restored text"></textarea>
     </div>
     <div class="error" id="r-error" hidden></div>
   </section>
 </main>
 <footer>
   <div class="wrap">
-    <a id="link-github" href="#">Исходный код на GitHub</a>
-    · Open source (MIT), скачай и запускай локально, данные не покидают браузер.
+    <a id="link-github" href="#">Source code on GitHub</a>
+    · Open source (MIT), download and run locally, data never leaves the browser.
   </div>
 </footer>
 
@@ -221,8 +221,8 @@ const CONFIG = {
 const LS = (function () {
   'use strict';
 
-  // ---------- Метки и защита от повторного маскирования ----------
-  // Значение, которое уже является нашей меткой, повторно не маскируется.
+  // ---------- Labels and protection against re-masking ----------
+  // A value that is already one of our labels is never masked again.
   const LABEL_RE = /^(?:\[[A-Z][A-Z0-9_]*\]|[A-Z][A-Z0-9_]*_\d+|\*{3,}[^\s*]{0,4})$/;
   const ALIAS_TOKEN_RE = /\b[A-Z][A-Z0-9_]*_\d+\b/g;
   const PARTIAL_TYPES = new Set(['CARD', 'KEY', 'JWT', 'SECRET']);
@@ -234,7 +234,7 @@ const LS = (function () {
     hosts: false, uuid: false, usernames: false, custom: false
   };
 
-  // ---------- Проверки ----------
+  // ---------- Validators ----------
   function luhnOk(digits) {
     if (!/^\d{13,19}$/.test(digits)) return false;
     let sum = 0, alt = false;
@@ -280,7 +280,7 @@ const LS = (function () {
     return l === '::1' || l === '::' || /^fe[89ab]/.test(l) || /^f[cd]/.test(l);
   }
 
-  // ---------- Детекторы ----------
+  // ---------- Detectors ----------
   function scan(re, text, cb) {
     re.lastIndex = 0;
     let m;
@@ -326,7 +326,7 @@ const LS = (function () {
   const VERSION_CTX = /(?:version|ver|v|build|release|rev|версия|версии)[\s:=_.-]*$/i;
   const USER_FALSE = new Set(['from', 'for']);
 
-  // pri: меньше число, выше приоритет
+  // pri: lower number means higher priority
   const DETECTORS = [
     { id: 'privkey', pri: 1, find(text, o, push) {
       scan(RE.privkey, text, (m) => push(m.index, m.index + m[0].length, 'PRIVATE_KEY'));
@@ -445,7 +445,7 @@ const LS = (function () {
 
   function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
-  // Свои слова и регулярки. Невалидные регулярки не падают, а попадают в errors.
+  // Custom words and regexes. Invalid regexes do not throw, they are reported in errors.
   function buildCustom(lines) {
     const words = [], regexes = [], errors = [];
     for (const raw of lines || []) {
@@ -464,7 +464,7 @@ const LS = (function () {
     return { regexes, errors };
   }
 
-  // ---------- Сессия и псевдонимы ----------
+  // ---------- Session and pseudonyms ----------
   function createSession() {
     return { fwd: new Map(), rev: new Map(), counters: Object.create(null) };
   }
@@ -493,8 +493,8 @@ const LS = (function () {
     return '*'.repeat(v.length - 4) + v.slice(-4);
   }
 
-  // ---------- Разрешение пересечений ----------
-  // Сначала приоритет (меньше = важнее), затем длина (длиннее лучше), затем позиция.
+  // ---------- Overlap resolution ----------
+  // Priority first (lower wins), then length (longer wins), then position.
   function resolve(matches, length) {
     matches.sort((a, b) => (a.pri - b.pri) || ((b.e - b.s) - (a.e - a.s)) || (a.s - b.s));
     const cov = new Uint8Array(length);
@@ -521,7 +521,7 @@ const LS = (function () {
     };
   }
 
-  // ---------- Главная функция: один проход ----------
+  // ---------- Main function: single pass ----------
   function sanitize(text, opts, session) {
     const o = normalizeOpts(opts);
     session = session || createSession();
@@ -564,12 +564,12 @@ const LS = (function () {
     return { text: parts.join(''), counts, total, segments };
   }
 
-  // ---------- Восстановление ----------
+  // ---------- Restore ----------
   function parseMap(map) {
     if (typeof map === 'string') {
-      try { map = JSON.parse(map); } catch (e) { throw new Error('Карта не является корректным JSON'); }
+      try { map = JSON.parse(map); } catch (e) { throw new Error('Mapping is not valid JSON'); }
     }
-    if (!map || !Array.isArray(map.entries)) throw new Error('В карте нет списка entries');
+    if (!map || !Array.isArray(map.entries)) throw new Error('Mapping has no entries list');
     const rev = new Map();
     for (const en of map.entries) {
       if (en && typeof en.alias === 'string' && typeof en.original === 'string' && en.alias) rev.set(en.alias, en.original);
@@ -577,7 +577,7 @@ const LS = (function () {
     return rev;
   }
 
-  // Подстановка от самых длинных псевдонимов к коротким, за один проход.
+  // Substitute from the longest aliases to the shortest, in one pass.
   function restore(text, map) {
     const rev = map instanceof Map ? map : parseMap(map);
     if (!rev.size) return text;
@@ -600,21 +600,21 @@ const LS = (function () {
   $('link-github').href = CONFIG.github;
 
   const TYPE_LABELS = [
-    ['email', 'E-mail'], ['ipv4', 'IPv4'], ['ipv6', 'IPv6'], ['mac', 'MAC-адреса'],
-    ['jwt', 'JWT'], ['keys', 'Облачные и сервисные ключи'],
-    ['authhdr', 'Заголовки авторизации и Cookie'], ['kv', 'Пары ключ=значение и JSON-поля'],
-    ['urlcreds', 'Учётные данные в URL'], ['privkey', 'Блоки приватных ключей'],
-    ['card', 'Банковские карты (Луна)'], ['iban', 'IBAN (mod 97)'], ['phone', 'Телефоны (+...)'],
-    ['hosts', 'Внутренние хосты и FQDN (опционально)'], ['uuid', 'UUID (опционально)'],
-    ['usernames', 'Имена пользователей (опционально)'], ['custom', 'Свои слова и регулярки (опционально)']
+    ['email', 'E-mail'], ['ipv4', 'IPv4'], ['ipv6', 'IPv6'], ['mac', 'MAC addresses'],
+    ['jwt', 'JWT'], ['keys', 'Cloud and service keys'],
+    ['authhdr', 'Authorization headers and cookies'], ['kv', 'key=value pairs and JSON fields'],
+    ['urlcreds', 'Credentials in URLs'], ['privkey', 'Private key blocks'],
+    ['card', 'Bank cards (Luhn)'], ['iban', 'IBAN (mod 97)'], ['phone', 'Phones (+...)'],
+    ['hosts', 'Internal hosts and FQDNs (optional)'], ['uuid', 'UUID (optional)'],
+    ['usernames', 'Usernames (optional)'], ['custom', 'Custom words and regexes (optional)']
   ];
   const MODES = [
-    ['type', 'Тип: [EMAIL]'], ['pseudonyms', 'Псевдонимы: EMAIL_1'],
-    ['partial', 'Частичная маска: ****1234'], ['remove', 'Удаление: [REDACTED]']
+    ['type', 'Type: [EMAIL]'], ['pseudonyms', 'Pseudonyms: EMAIL_1'],
+    ['partial', 'Partial mask: ****1234'], ['remove', 'Removal: [REDACTED]']
   ];
   const COUNT_LABELS = {
-    EMAIL: 'E-mail', IPV4: 'IPv4', IPV6: 'IPv6', MAC: 'MAC', CARD: 'Карты', IBAN: 'IBAN',
-    PHONE: 'Телефоны', HOST: 'Хосты', UUID: 'UUID', USER: 'Пользователи', CUSTOM: 'Свои'
+    EMAIL: 'E-mail', IPV4: 'IPv4', IPV6: 'IPv6', MAC: 'MAC', CARD: 'Cards', IBAN: 'IBAN',
+    PHONE: 'Phones', HOST: 'Hosts', UUID: 'UUID', USER: 'Users', CUSTOM: 'Custom'
   };
   const SECRET_TYPES = new Set(['JWT', 'KEY', 'SECRET', 'PRIVATE_KEY']);
 
@@ -639,13 +639,13 @@ const LS = (function () {
         for (const k of ['skipPrivate', 'autopaste', 'highlight']) if (typeof s[k] === 'boolean') d[k] = s[k];
         settings = d;
       }
-    } catch (e) { /* localStorage недоступен: работаем с настройками по умолчанию */ }
+    } catch (e) { /* localStorage unavailable: fall back to defaults */ }
   }
   function saveSettings() {
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { /* ignore */ }
   }
 
-  // ---- построение настроек ----
+  // ---- settings UI ----
   const typeBoxes = $('type-boxes');
   for (const [id, label] of TYPE_LABELS) {
     const l = document.createElement('label');
@@ -675,7 +675,7 @@ const LS = (function () {
 
   function setStatus(msg) { $('status').textContent = msg || ''; }
 
-  // ---- обработка ----
+  // ---- processing ----
   function run() {
     const text = $('input').value;
     const t0 = performance.now();
@@ -687,7 +687,7 @@ const LS = (function () {
     if (settings.types.custom) {
       const errs = LS.buildCustom(opts.custom).errors;
       errBox.hidden = !errs.length;
-      errBox.textContent = errs.length ? 'Невалидная регулярка пропущена: ' + errs.join('; ') : '';
+      errBox.textContent = errs.length ? 'Invalid regex skipped: ' + errs.join('; ') : '';
     } else errBox.hidden = true;
 
     const res = LS.sanitize(text, opts, session);
@@ -695,14 +695,14 @@ const LS = (function () {
     renderOutput(res);
     renderStats(res);
     updateMapInfo();
-    setStatus(text ? 'Готово за ' + Math.round(performance.now() - t0) + ' мс' : '');
+    setStatus(text ? 'Done in ' + Math.round(performance.now() - t0) + ' ms' : '');
   }
 
   function renderOutput(res) {
     const ta = $('output'), view = $('output-view'), note = $('highlight-note');
     const canHighlight = settings.highlight && res.text.length <= 1000000 && res.segments.length <= 5000;
     note.hidden = !(settings.highlight && !canHighlight);
-    if (note.hidden === false) note.textContent = 'Подсветка отключена: результат слишком большой. Показан обычный текст.';
+    if (note.hidden === false) note.textContent = 'Highlighting disabled: the result is too large. Showing plain text.';
     if (!canHighlight) { view.hidden = true; ta.hidden = false; ta.value = res.text; return; }
     ta.hidden = true; view.hidden = false;
     view.textContent = '';
@@ -724,13 +724,13 @@ const LS = (function () {
   function renderStats(res) {
     const box = $('stats');
     box.textContent = '';
-    if (!res.total) { box.textContent = $('input').value ? 'Ничего не найдено.' : ''; return; }
+    if (!res.total) { box.textContent = $('input').value ? 'Nothing found.' : ''; return; }
     const agg = Object.create(null);
     for (const [t, n] of Object.entries(res.counts)) {
-      const key = SECRET_TYPES.has(t) ? 'Секреты' : (COUNT_LABELS[t] || t);
+      const key = SECRET_TYPES.has(t) ? 'Secrets' : (COUNT_LABELS[t] || t);
       agg[key] = (agg[key] || 0) + n;
     }
-    box.append(document.createTextNode(Object.entries(agg).map(([k, n]) => k + ': ' + n).join(', ') + '. Всего: '));
+    box.append(document.createTextNode(Object.entries(agg).map(([k, n]) => k + ': ' + n).join(', ') + '. Total: '));
     const s = document.createElement('strong');
     s.textContent = String(res.total);
     box.appendChild(s);
@@ -739,8 +739,8 @@ const LS = (function () {
   function updateMapInfo() {
     const n = session.rev.size;
     $('map-info').textContent = n
-      ? 'В карте записей: ' + n + '. Хранится только в памяти страницы.'
-      : 'Карта заполняется в режиме «Псевдонимы» и хранится только в памяти страницы.';
+      ? 'Mapping entries: ' + n + '. Kept only in page memory.'
+      : 'The mapping is filled in "Pseudonyms" mode and kept only in page memory.';
   }
 
   function schedule(immediate) {
@@ -750,7 +750,7 @@ const LS = (function () {
     else debounceTimer = setTimeout(run, 250);
   }
 
-  // ---- вспомогательные ----
+  // ---- helpers ----
   function download(name, content, type) {
     const url = URL.createObjectURL(new Blob([content], { type }));
     const a = document.createElement('a');
@@ -762,18 +762,18 @@ const LS = (function () {
   async function copyText(text, statusEl) {
     try {
       await navigator.clipboard.writeText(text);
-      statusEl.textContent = 'Скопировано';
+      statusEl.textContent = 'Copied';
     } catch (e) {
       try {
         const ta = document.createElement('textarea');
         ta.value = text; document.body.appendChild(ta); ta.select();
         document.execCommand('copy'); ta.remove();
-        statusEl.textContent = 'Скопировано';
-      } catch (e2) { statusEl.textContent = 'Не удалось скопировать'; }
+        statusEl.textContent = 'Copied';
+      } catch (e2) { statusEl.textContent = 'Copy failed'; }
     }
   }
 
-  // Вымышленные данные. Префиксы собраны конкатенацией, чтобы сканеры секретов не принимали демо за утечку.
+  // Fictional data. Prefixes are concatenated so secret scanners do not mistake the demo for a leak.
   function sampleText() {
     const nl = '\n';
     const key = '-----BEGIN ' + 'PRIVATE KEY-----' + nl +
@@ -803,7 +803,7 @@ const LS = (function () {
     ].join(nl) + nl;
   }
 
-  // ---- события ----
+  // ---- events ----
   $('input').addEventListener('input', () => schedule(false));
   $('input').addEventListener('paste', () => { if (settings.autopaste) setTimeout(() => schedule(true), 0); });
   $('btn-run').addEventListener('click', run);
@@ -828,20 +828,20 @@ const LS = (function () {
     $('input').value = ''; $('output').value = ''; $('output-view').textContent = '';
     $('output-view').hidden = true; $('output').hidden = false; $('highlight-note').hidden = true;
     lastOutput = ''; session = LS.createSession();
-    $('stats').textContent = ''; updateMapInfo(); setStatus('Текст и карта сессии очищены');
+    $('stats').textContent = ''; updateMapInfo(); setStatus('Text and session mapping cleared');
   });
   $('btn-copy').addEventListener('click', () => copyText(lastOutput, $('status')));
   $('btn-txt').addEventListener('click', () => download('sanitized.txt', lastOutput, 'text/plain;charset=utf-8'));
   $('btn-sample').addEventListener('click', () => { $('input').value = sampleText(); run(); });
   $('btn-reset').addEventListener('click', () => {
-    settings = defaults(); applySettingsToUI(); saveSettings(); schedule(true); setStatus('Настройки сброшены');
+    settings = defaults(); applySettingsToUI(); saveSettings(); schedule(true); setStatus('Settings reset');
   });
   $('btn-map').addEventListener('click', () => {
-    if (!session.rev.size) { setStatus('Карта пуста: выбери режим «Псевдонимы» и обработай текст'); return; }
+    if (!session.rev.size) { setStatus('Mapping is empty: choose "Pseudonyms" mode and process some text'); return; }
     download('log-sanitizer-map.json', JSON.stringify(LS.exportMap(session), null, 2), 'application/json');
   });
 
-  // вкладки
+  // tabs
   function showTab(which) {
     const clean = which === 'clean';
     $('view-clean').hidden = !clean; $('view-restore').hidden = clean;
@@ -851,13 +851,13 @@ const LS = (function () {
   $('tab-clean').addEventListener('click', () => showTab('clean'));
   $('tab-restore').addEventListener('click', () => showTab('restore'));
 
-  // восстановление
+  // restore
   $('r-file').addEventListener('change', (e) => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
     const fr = new FileReader();
-    fr.onload = () => { $('r-map').value = String(fr.result); $('r-status').textContent = 'Карта загружена'; };
-    fr.onerror = () => { $('r-status').textContent = 'Не удалось прочитать файл'; };
+    fr.onload = () => { $('r-map').value = String(fr.result); $('r-status').textContent = 'Mapping loaded'; };
+    fr.onerror = () => { $('r-status').textContent = 'Could not read the file'; };
     fr.readAsText(f);
     e.target.value = '';
   });
@@ -868,7 +868,7 @@ const LS = (function () {
       const mapText = $('r-map').value.trim();
       const map = mapText ? mapText : LS.exportMap(session);
       $('r-output').value = LS.restore($('r-input').value, map);
-      $('r-status').textContent = mapText ? 'Готово' : 'Готово (использована карта текущей сессии)';
+      $('r-status').textContent = mapText ? 'Done' : 'Done (used the current session mapping)';
     } catch (e) {
       err.textContent = e.message; err.hidden = false; $('r-status').textContent = '';
     }

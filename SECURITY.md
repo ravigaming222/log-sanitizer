@@ -1,16 +1,16 @@
-# Безопасность
+# Security
 
-Log Sanitizer полностью офлайновый: страница не делает сетевых запросов, а строгий Content-Security-Policy
-(`default-src 'none'`) технически запрещает их браузеру. Текст и карта соответствий живут только в памяти страницы.
-В localStorage сохраняются лишь чекбоксы и режим замены.
+Log Sanitizer is fully offline: the page makes no network requests, and a strict Content-Security-Policy
+(`default-src 'none'`) technically forbids them in the browser. Text and the mapping live only in page memory.
+Only checkboxes and the replacement mode are saved to localStorage.
 
-## Как сообщить о проблеме
+## How to report a problem
 
-- **Пропущенный шаблон** (инструмент не нашёл секрет известного формата) или ложное срабатывание: откройте
-  [Issue](https://github.com/ravigaming222/log-sanitizer/issues). Приводите **только вымышленные** примеры, никогда не реальные секреты.
-- **Уязвимость в самой странице** (например, XSS, обход CSP, утечка данных): используйте
-  [Security Advisories](https://github.com/ravigaming222/log-sanitizer/security/advisories/new), чтобы не раскрывать её публично до исправления.
+- **A missed pattern** (the tool failed to find a secret of a known format) or a false positive: open an
+  [Issue](https://github.com/ravigaming222/log-sanitizer/issues). Use **fictional examples only**, never real secrets.
+- **A vulnerability in the page itself** (for example XSS, a CSP bypass or a data leak): use
+  [Security Advisories](https://github.com/ravigaming222/log-sanitizer/security/advisories/new) so it is not disclosed publicly before a fix.
 
-## Что инструмент не гарантирует
+## What the tool does not guarantee
 
-Он находит известные шаблоны и не заменяет ручной просмотр. Подробнее в разделе «Модель угроз и ограничения» файла README.
+It finds known patterns and does not replace manual review. See "Threat model and limitations" in the README.
