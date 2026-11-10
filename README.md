@@ -53,6 +53,10 @@ Whitelist: values that must never be masked (one per line, exact match).
 
 Substitution goes from the longest pseudonyms to the shortest, so `IPV4_10` is not broken by replacing `IPV4_1`. The mapping lives only in page memory: nothing is written to disk or localStorage until you download it yourself. "Clear text" also wipes the session mapping.
 
+## Try online
+
+Live copy (still fully client-side, nothing is uploaded): <https://ravigaming222.github.io/log-sanitizer/>
+
 ## Download
 
 Latest release: <https://github.com/ravigaming222/log-sanitizer/releases/latest>. A release contains `log-sanitizer.html`, the archive `log-sanitizer-<tag>.zip` and `SHA256SUMS.txt`. To verify checksums (keep the files in the same folder):
