@@ -1,0 +1,10 @@
+{
+  "name": "log-sanitizer",
+  "version": "1.0.0",
+  "description": "Офлайновая утилита для удаления секретов и персональных данных из логов (один HTML-файл).",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}
